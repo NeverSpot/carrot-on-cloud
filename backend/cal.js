@@ -179,7 +179,7 @@ export class RatingCalculator {
     }
 }
 
-export default function predict(contestants, calcPerfs = false) {
+ function predict(contestants, calcPerfs = false) {
     new RatingCalculator(contestants).calculateDeltas(calcPerfs);
     return contestants.map((c) => new PredictResult(c.handle, c.rating, c.delta, c.performance));
 }
@@ -233,7 +233,9 @@ async function getUser(contestID){
 }
 
 
-async function getDateForContest(contestId){
+
+// Main function to use
+export default async function getDateForContest(contestId){
     await getUser(contestId)
     return await predict(contestants, true);
 }
