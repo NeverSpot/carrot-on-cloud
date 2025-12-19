@@ -168,13 +168,9 @@ export class RatingCalculator {
         // calculating performance, varies.
         // Tests on some selected contests show (this perf - true perf) lie in [0, 4].
         for (const c of this.contestants) {
-            if (c.rank === 1) {
-                c.performance = Infinity;  // Rank 1 always gains rating.
-            } else {
-                c.performance = binarySearch(
-                    MIN_RATING_LIMIT, MAX_RATING_LIMIT,
-                    (assumedRating) => this.calcDelta(c, assumedRating) + this.adjustment <= 0);
-            }
+            c.performance = binarySearch(
+                MIN_RATING_LIMIT, MAX_RATING_LIMIT,
+                (assumedRating) => this.calcDelta(c, assumedRating) + this.adjustment <= 0);
         }
     }
 }
