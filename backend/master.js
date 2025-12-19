@@ -20,3 +20,4 @@ for(const user of a){
         values (${contestId},${user.handle},${user.performance},${user.delta},${user.rating})
     `)
 }
+console.log("done");
