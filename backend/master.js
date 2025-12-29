@@ -1,6 +1,8 @@
 import express from "express";
 import {queryContestResults} from "./db/db.js";
 import cors from "cors";
+import "dotenv/config";
+
 
 const app = express();
 
