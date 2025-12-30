@@ -10,6 +10,7 @@
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
+      "css": ["scripts/content.css"],
       "matches": [
         "https://codeforces.com/contest/*/standings*"
       ],

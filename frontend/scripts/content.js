@@ -40,16 +40,60 @@ function updatePage(res){
 
         const userName=handle.textContent.replace(/[ *#]/g, "").trim();
 
-        if(data[userName]===undefined)continue;
-
-
-        const userPref=data[userName]["performance"];
-        const userDelta=data[userName]["delta"];
 
         const pref=document.createElement("td")
         const delta=document.createElement("td")
-        pref.textContent=userPref;
-        delta.textContent=userDelta;
+
+        if(data[userName]!==undefined) {
+
+            const userPref=data[userName]["performance"];
+            const userDelta=data[userName]["delta"];
+
+
+            pref.textContent=userPref;
+            delta.textContent=userDelta;
+
+
+            // delta coloring
+            if (userDelta > 0) {
+                delta.classList.add('carrot-delta-positive');
+                delta.textContent = `+${userDelta}`;
+            } else{
+                delta.classList.add('carrot-delta-negative');
+                delta.textContent = `${userDelta}`;
+            }
+            pref.style.fontWeight = 'bold';
+            // performance coloring
+            if (userPref < 1200) {
+                pref.classList.add('newbie');
+            } else if (userPref < 1400) {
+                pref.classList.add('pupil');
+            } else if (userPref < 1600) {
+                pref.classList.add('specialist');
+            } else if (userPref < 1900) {
+                pref.classList.add('expert');
+            } else if (userPref < 2100) {
+                pref.classList.add('candidate-master');
+            } else if (userPref < 2300) {
+                pref.classList.add('master');
+            } else if (userPref < 2400) {
+                pref.classList.add('international-master');
+            } else if (userPref < 2600) {
+                pref.classList.add('grandmaster');
+            } else if (userPref < 3000) {
+                pref.classList.add('international-grandmaster');
+            } else {
+                pref.classList.add('legendary-grandmaster');
+            }
+        }
+
+
+        // gray coloring for table
+        if (i % 2 === 1) {
+            pref.classList.add('carrot-dark');
+            delta.classList.add('carrot-dark');
+        }
+
         user.append(pref);
         user.append(delta);
     }
