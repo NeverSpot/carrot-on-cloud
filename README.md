@@ -18,7 +18,35 @@ Carrot on Cloud computes contest data once per contest and distributes the resul
 - **Frontend**: Chrome Extension (Manifest V3) that runs on `codeforces.com` and injects a **Performance** column into standings/results tables.
 - **Backend**: Node.js + Express server responsible for fetching, computing, and serving contest analytics.
 - **Database**: MySQL used to cache contest results and computed metrics.
+## High-Level Architecture
 
+```text
+                    ┌────────────┐
+                    │  Codeforces API    │
+                    └─────┬──────┘
+                              │
+                              ▼
+                    ┌────────────┐
+                    │  Backend (Express) │
+                    │  - Fetch contest   │
+                    │  - Compute metrics │
+                    │  - Cache results   │
+                    └─────┬──────┘
+                              │
+                              ▼
+                    ┌────────────┐
+                    │     MySQL DB       │
+                    │  Cached contests   │
+                    │  & performance     │
+                    └─────┬──────┘
+                              │
+                              ▼
+             ┌─────────────────────┐
+             │ Chrome Extension (Manifest V3)    │
+             │ - Fetch cached results            │
+             │ - Inject "Performance" column     │
+             │ - Runs on codeforces.com          │
+             └─────────────────────┘
 ## Data Flow
 
 Codeforces API → Backend (compute & cache) → MySQL → Chrome Extension → Codeforces Standings UI
