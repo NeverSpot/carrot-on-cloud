@@ -1,100 +1,56 @@
 # Carrot on Cloud
 
-Carrot on Cloud is a project that consists of a browser extension and a backend server designed to display performance data for Codeforces contests.
+Carrot on Cloud is a browser extension and backend system that displays performance analytics for Codeforces contests directly on the standings page.  
+It centralizes contest computation to eliminate redundant API calls and serve consistent results to all users.
+
+## Why this project exists
+
+Codeforces contest analytics are typically computed per user, leading to redundant API calls and unnecessary load.  
+Carrot on Cloud computes contest data once per contest and distributes the results efficiently to all clients.
+
+## Key Optimization
+
+- Reduces Codeforces API calls from O(n) (per user) to O(1) (single shared call)
+- Contest results are cached to avoid recomputation
 
 ## Overview
 
-- **Frontend**: A Chrome Extension (Manifest V3) that runs on `codeforces.com`. It adds a "Performance" column to the standings/results tables.
-- **Backend**: A Node.js Express server that fetches, stores, and serves contest results.
-- **Database**: MySQL is used to cache contest results to avoid redundant calculations or API calls.
+- **Frontend**: Chrome Extension (Manifest V3) that runs on `codeforces.com` and injects a **Performance** column into standings/results tables.
+- **Backend**: Node.js + Express server responsible for fetching, computing, and serving contest analytics.
+- **Database**: MySQL used to cache contest results and computed metrics.
+
+## Data Flow
+
+Codeforces API → Backend (compute & cache) → MySQL → Chrome Extension → Codeforces Standings UI
+
+## Features
+
+- Displays contest performance analytics directly on Codeforces
+- Centralized computation with backend caching
+- Faster load times and reduced external API usage
 
 ## Project Structure
 
-```text
 .
-├── backend/            # Express server and database logic
-│   ├── db/            # Database connection and queries
-│   ├── cal.js         # Calculation logic for contest data
-│   ├── master.js      # Main entry point for the backend
-│   └── ...
-├── frontend/           # Browser extension files
-│   ├── popup/         # Extension popup UI
-│   ├── scripts/       # Content scripts that run on Codeforces
-│   └── manifest.json  # Extension manifest
-├── package.json        # Node.js dependencies and scripts
+├── backend/            # Express server and database logic  
+│   ├── db/             # Database connection and queries  
+│   ├── cal.js          # Contest calculation logic  
+│   ├── master.js       # Backend entry point  
+│   └── ...  
+├── frontend/           # Chrome extension  
+│   ├── popup/          # Extension popup UI  
+│   ├── scripts/        # Content scripts for Codeforces  
+│   └── manifest.json   # Extension manifest  
+├── package.json        # Node.js dependencies and scripts  
 └── ...
-```
+
+## Tech Stack
+
+- Node.js, Express
+- MySQL
+- Chrome Extension (Manifest V3)
+- JavaScript
 
 ## Requirements
 
-- **Node.js**: v14 or higher recommended.
-- **MySQL**: A running instance of MySQL.
-- **Browser**: Google Chrome or any Chromium-based browser for the extension.
-
-## Setup & Installation
-
-### Backend Setup
-
-1.  **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-
-2.  **Environment Configuration**:
-    - Create a `.env` file in the root directory based on `.idea/.env.example`:
-      ```env
-      DB_HOST=your_host
-      DB_USER=your_user
-      DB_PASSWORD=your_password
-      DB_NAME=carrot
-      PORT=3000
-      ```
-
-3.  **Database Configuration**:
-    - Ensure MySQL is running.
-    - Create a database named `carrot`.
-    - Create a table `contest_results`:
-      ```sql
-      CREATE TABLE contest_results (
-          contest_id INT,
-          handle VARCHAR(255),
-          performance INT,
-          delta INT,
-          rating INT,
-          PRIMARY KEY (contest_id, handle)
-      );
-      ```
-
-4.  **Run the Backend**:
-    ```bash
-    node backend/master.js
-    ```
-    The server will start on the port specified in `.env` (default `3000`).
-
-### Frontend Setup
-
-1.  Open your browser and navigate to `chrome://extensions/`.
-2.  Enable **Developer mode** (toggle in the top right).
-3.  Click **Load unpacked**.
-4.  Select the `frontend` folder from this repository.
-
-## Scripts
-
-- `npm install`: Installs backend dependencies.
-- `node backend/master.js`: Starts the backend server.
-
-## Environment Variables
-
-The project uses a `.env` file to manage sensitive configuration. See the [Backend Setup](#backend-setup) section for details on how to configure it.
-
-Variables supported:
-- `DB_HOST`: MySQL server host.
-- `DB_USER`: MySQL user.
-- `DB_PASSWORD`: MySQL password.
-- `DB_NAME`: MySQL database name.
-- `PORT`: Port for the backend server.
-
-## Tests
-
-- **TODO**: No tests are currently implemented. Need to add unit tests for calculation logic (`cal.js`) and integration tests for API endpoints.
-
+- Node.js v14 or higher
