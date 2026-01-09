@@ -47,6 +47,7 @@ Carrot on Cloud computes contest data once per contest and distributes the resul
              │ - Inject "Performance" column     │
              │ - Runs on codeforces.com          │
              └─────────────────────┘
+```
 ## Data Flow
 
 Codeforces API → Backend (compute & cache) → MySQL → Chrome Extension → Codeforces Standings UI
