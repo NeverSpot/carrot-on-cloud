@@ -20,34 +20,8 @@ Carrot on Cloud computes contest data once per contest and distributes the resul
 - **Database**: MySQL used to cache contest results and computed metrics.
 ## High-Level Architecture
 
-```text
-                    ┌────────────┐
-                    │  Codeforces API    │
-                    └─────┬──────┘
-                              │
-                              ▼
-                    ┌────────────┐
-                    │  Backend (Express) │
-                    │  - Fetch contest   │
-                    │  - Compute metrics │
-                    │  - Cache results   │
-                    └─────┬──────┘
-                              │
-                              ▼
-                    ┌────────────┐
-                    │     MySQL DB       │
-                    │  Cached contests   │
-                    │  & performance     │
-                    └─────┬──────┘
-                              │
-                              ▼
-             ┌─────────────────────┐
-             │ Chrome Extension (Manifest V3)    │
-             │ - Fetch cached results            │
-             │ - Inject "Performance" column     │
-             │ - Runs on codeforces.com          │
-             └─────────────────────┘
-```
+<img width="721" height="842" alt="carrot" src="https://github.com/user-attachments/assets/5d49adba-3b91-4ce5-9506-1c7a7b6e1958" />
+
 ## Data Flow
 
 Codeforces API → Backend (compute & cache) → MySQL → Chrome Extension → Codeforces Standings UI
