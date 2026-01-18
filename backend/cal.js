@@ -205,26 +205,13 @@ async function getUser(contestID){
 
 
 
-    if(contestEnded==="FINISHED"){
-        const rating=[]
-        const ratingChanges=await fetch(` https://codeforces.com/api/contest.ratingChanges?contestId=${contestID}`);
-        const data=await ratingChanges.json();
-        const result=data["result"];
 
-        for(const user of result){
-            rating[user["handle"]]=user["oldRating"];
-            if( rating[user["handle"]]===0) rating[user["handle"]]=1400;
-        }
-        for(const user of contestants){
-            user.rating=rating[user.handle];
-            user.effectiveRating = user.rating == null ? DEFAULT_RATING : user.rating;
-        }
-    }else{
-        for(const user of contestants){
-            const res=await fetch(` https://codeforces.com/api/user.rating?handle=${user.handle}`);
-            user.rating=await res.json();
-            user.effectiveRating = user.rating == null ? DEFAULT_RATING : user.rating;
-        }
+    // finding rating for each user
+    for(const user of contestants){
+
+        // fetch user rating using mysqkl
+        // user.rating=rating[user.handle];
+        user.effectiveRating = user.rating == null ? DEFAULT_RATING : user.rating;
     }
 }
 
