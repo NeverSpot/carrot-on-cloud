@@ -2,6 +2,8 @@
 
 Carrot on Cloud is a browser extension and backend system that displays performance analytics for Codeforces contests directly on the standings page.  
 It centralizes contest computation to eliminate redundant API calls and serve consistent results to all users.
+Performance analytics includes metrics such as rating change estimations, relative performance, and contest-based comparisons derived from official Codeforces contest data.
+
 
 ## Why this project exists
 
@@ -20,37 +22,17 @@ Carrot on Cloud computes contest data once per contest and distributes the resul
 - **Database**: MySQL used to cache contest results and computed metrics.
 ## High-Level Architecture
 
-```text
-                    ┌────────────┐
-                    │  Codeforces API    │
-                    └─────┬──────┘
-                              │
-                              ▼
-                    ┌────────────┐
-                    │  Backend (Express) │
-                    │  - Fetch contest   │
-                    │  - Compute metrics │
-                    │  - Cache results   │
-                    └─────┬──────┘
-                              │
-                              ▼
-                    ┌────────────┐
-                    │     MySQL DB       │
-                    │  Cached contests   │
-                    │  & performance     │
-                    └─────┬──────┘
-                              │
-                              ▼
-             ┌─────────────────────┐
-             │ Chrome Extension (Manifest V3)    │
-             │ - Fetch cached results            │
-             │ - Inject "Performance" column     │
-             │ - Runs on codeforces.com          │
-             └─────────────────────┘
-```
-## Data Flow
+![Contest processing flow](carrot.svg)
 
-Codeforces API → Backend (compute & cache) → MySQL → Chrome Extension → Codeforces Standings UI
+## How It Works
+
+1. The Chrome extension extracts the contest ID and user handle from the Codeforces standings page.
+2. The extension sends a request to the backend with the contest ID and required metadata.
+3. The backend checks whether analytics for the contest already exist in the database.
+4. If cached data exists, it is returned immediately.
+5. Otherwise, the backend fetches contest data from the Codeforces API, computes performance metrics, stores the results in MySQL, and returns the response.
+6. The extension injects the computed performance data into the standings UI.
+
 
 ## Features
 
@@ -83,3 +65,6 @@ Codeforces API → Backend (compute & cache) → MySQL → Chrome Extension → 
 ## Requirements
 
 - Node.js v14 or higher
+- MySQL 8.x
+- Google Chrome (for extension usage)
+
