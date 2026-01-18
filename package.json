@@ -16,7 +16,8 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mysql2": "^3.16.0",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "redis": "^5.10.0"
   },
   "bugs": {
     "url": "https://github.com/NeverSpot/carrot-on-cloud/issues"

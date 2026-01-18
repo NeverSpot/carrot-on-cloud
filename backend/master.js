@@ -1,12 +1,14 @@
 import "dotenv/config";
-import express from "express";
 import {queryContestResults} from "./db/db.js";
-import cors from "cors";
 
 
+const express=require('express');
 const app = express();
 
+const cors= require('cors');
 app.use(cors());
+
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -17,19 +19,12 @@ app.get("/", (req, res) => {
 });
 
 app.post("/contest", async (req, res) => {
-    // if (!req.body) {
-    //     return res.status(400).json({ error: "Missing request body" });
-    // }
+
+    console.log("Request Received");
     let { contestId, userList } = req.body;
 
-    // if (contestId === undefined) {
-    //     return res.status(400).json({ error: "Missing contestId" });
-    // }
 
-    // contestId → number
-    // users → array
     userList = userList.map(u => u.trim());
-
 
 
 
@@ -39,6 +34,8 @@ app.post("/contest", async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
+
+    console.log("Response Sent!!!!!");
 });
 
 

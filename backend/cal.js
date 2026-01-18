@@ -190,7 +190,7 @@ async function getUser(contestID){
     const standings=await fetch(` https://codeforces.com/api/contest.standings?contestId=${contestID}`);
     const data=await standings.json();
 
-    const result=data["result"]
+    const result=data["result"];
 
     const rows=await result["rows"];
     for(const user of rows){
@@ -231,10 +231,11 @@ async function getUser(contestID){
 
 
 // Main function to use
-export default async function getDateForContest(contestId){
+export default async function getDataForContest(contestId){
     await getUser(contestId)
     return await predict(contestants, true);
 }
+getDataForContest(2191);
 
 
 // const data=await getDateForContest(2176);

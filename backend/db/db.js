@@ -1,43 +1,41 @@
 import pool from "./mysql.js";
 import getDateForContest from "../cal.js";
+import redis from "./redis.js";
 
-export async function pushContestData(contestId) {
+export async function pushContestData(contestId){
 
     const contestData = await getDateForContest(contestId);
 
-
     const sql = `
-    INSERT INTO contest_results
-      (contest_id, handle, performance, delta, rating)
-    VALUES (?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-      performance = VALUES(performance),
-      delta       = VALUES(delta),
-      rating      = VALUES(rating)
-  `;
+        INSERT INTO contest_results
+            (contest_id, handle, performance, delta, rating)
+        VALUES (?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+                             performance = VALUES(performance),
+                             delta       = VALUES(delta),
+                             rating      = VALUES(rating)
+    `;
 
+
+
+    let cnt=0;
+    console.log(" data mila ab push kikya jai");
     for (const user of contestData) {
         try {
-            const [res] = await pool.execute(sql, [
+            await pool.execute(sql, [
                 contestId,
                 user.handle,
                 user.performance,
                 user.delta,
                 user.rating || null
             ]);
-
-            console.log(
-                user.handle,
-                "affected:", res.affectedRows,
-                "changed:", res.changedRows
-            );
+            cnt++;
 
         } catch (err) {
             console.error("❌ SQL ERROR for user:", user.handle);
             console.error("code:", err.code);
             console.error("errno:", err.errno);
             console.error("sqlState:", err.sqlState);
-            console.error("sqlMessage:", err.sqlMessage);
             console.error("query:", err.sql);
             console.error("params:", [
                 contestId,
@@ -48,8 +46,11 @@ export async function pushContestData(contestId) {
             ]);
 
             throw err; // rethrow so you don't silently ignore corruption
+        }finally {
         }
     }
+    console.log(`Total ${cnt} NEW DATA ADDED :)`);
+
 
 }
 // await pushContestData(2176);
@@ -58,9 +59,9 @@ async function contestNeedsRefresh(contestId) {
 
     const [rows] = await pool.execute(
         `
-        SELECT MAX(updated_at) AS last_update
-        FROM contest_results
-        WHERE contest_id = ?
+            SELECT MAX(updated_at) AS last_update
+            FROM contest_results
+            WHERE contest_id = ?
         `,
         [contestId]
     );
@@ -87,9 +88,29 @@ export async function queryContestResults(contestID, userList) {
         return [];
     }
 
-    if(await contestNeedsRefresh(contestID)){
-        await pushContestData(contestID);
+    const lockKey = `lock:contest:${contestID}`;
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    const acquired = await redis.set(lockKey, "1", {
+        NX: true,
+        PX: 2 * 60 * 1000,
+    });
+
+    if (acquired) {
+        try {
+            if (await contestNeedsRefresh(contestID)) {
+                await pushContestData(contestID);
+            }
+        } finally {
+            await redis.del(lockKey);
+        }
+    }else {
+        while((await redis.get(lockKey))==="1"){
+            await sleep()
+        }
     }
+
+
 
 
     const placeholders = userList.map(() => "?").join(",");
