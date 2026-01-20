@@ -1,5 +1,6 @@
 import FFTConv from './conv.js';
 import binarySearch from './binsearch.js'
+import pool from './db/mysql.js'
 
 /**
  * Rating calculation code adapted from TLE at
@@ -175,7 +176,7 @@ export class RatingCalculator {
     }
 }
 
- function predict(contestants, calcPerfs = false) {
+function predict(contestants, calcPerfs = false) {
     new RatingCalculator(contestants).calculateDeltas(calcPerfs);
     return contestants.map((c) => new PredictResult(c.handle, c.rating, c.delta, c.performance));
 }
@@ -203,26 +204,34 @@ async function getUser(contestID){
     }
     let contestEnded=result["contest"]["phase"];
 
+    console.log(contestants.length);
 
 
     if(contestEnded==="FINISHED"){
         const rating=[]
-        const ratingChanges=await fetch(` https://codeforces.com/api/contest.ratingChanges?contestId=${contestID}`);
+        const ratingChanges=await fetch(`https://codeforces.com/api/contest.ratingChanges?contestId=${contestID}`);
         const data=await ratingChanges.json();
         const result=data["result"];
 
+        console.log("OLD CONTEST DATA");
+
         for(const user of result){
             rating[user["handle"]]=user["oldRating"];
-            if( rating[user["handle"]]===0) rating[user["handle"]]=1400;
+            if((typeof user["oldRating"])!=="number")rating[user["handle"]]=DEFAULT_RATING;
+            if( rating[user["handle"]]===0)rating[user["handle"]]=DEFAULT_RATING;
         }
         for(const user of contestants){
             user.rating=rating[user.handle];
             user.effectiveRating = user.rating == null ? DEFAULT_RATING : user.rating;
         }
     }else{
+
         for(const user of contestants){
-            const res=await fetch(` https://codeforces.com/api/user.rating?handle=${user.handle}`);
-            user.rating=await res.json();
+            const row=await pool.execute(
+                "select rating from carrot.ratingtable where handle=?",
+                [user.handle]
+            )
+            user.rating=row[0][0]["rating"]
             user.effectiveRating = user.rating == null ? DEFAULT_RATING : user.rating;
         }
     }

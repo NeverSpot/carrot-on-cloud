@@ -3,10 +3,15 @@ import express from "express";
 import {queryContestResults} from "./db/db.js";
 import cors from "cors";
 
-
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://codeforces.com",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+}));
+
+app.options("/contest", cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -17,26 +22,17 @@ app.get("/", (req, res) => {
 });
 
 app.post("/contest", async (req, res) => {
-    // if (!req.body) {
-    //     return res.status(400).json({ error: "Missing request body" });
-    // }
+console.log("Request recived");
+
     let { contestId, userList } = req.body;
-
-    // if (contestId === undefined) {
-    //     return res.status(400).json({ error: "Missing contestId" });
-    // }
-
-    // contestId → number
-    // users → array
     userList = userList.map(u => u.trim());
-
-
     try {
         const data = await queryContestResults(contestId, userList);
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
     }
+	console.log("DATA SENT!!!!");
 });
 
 

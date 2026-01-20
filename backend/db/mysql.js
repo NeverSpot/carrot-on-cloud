@@ -1,19 +1,22 @@
-import "dotenv/config";
+// import "dotenv/config";
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "insha",
-    database: "carrot",
-    port:"3306",
+    host: process.env.DB_HOST,          // your database host
+    user: process.env.DB_USER,          // use your actual username
+    password: process.env.DB_PASSWORD,  // Use your actual password
+    database: process.env.DB_NAME,      // your database name
+    port: Number(process.env.DB_PORT),  // your database port
 });
 
 
-// 🔥 HARD PROOF TEST
-const conn = await pool.getConnection();
-console.log("✅ MySQL connected to DB:", conn.config.database);
-conn.release();
+try{
+    const conn = await pool.getConnection();
+    console.log("✅ MySQL connected to DB:", conn.config.database);
+    conn.release();
+}catch (e){
+    console.log(e);
+}
 
 
 export default pool;
