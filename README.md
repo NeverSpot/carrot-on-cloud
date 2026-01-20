@@ -81,30 +81,30 @@ The system leverages cloud infrastructure to provide a scalable, reliable servic
 ┌─────────────────────────────────────────────────────────────┐
 │                    ORIGINAL CARROT                          │
 ├─────────────────────────────────────────────────────────────┤
-│  User 1 → CF API (fetch 40K records) → Calculate locally   │
-│  User 2 → CF API (fetch 40K records) → Calculate locally   │
-│  User 3 → CF API (fetch 40K records) → Calculate locally   │
-│  ...                                                         │
-│  User 40K → CF API (fetch 40K records) → Calculate locally │
-│                                                              │
-│  Result: 40,000 API calls × 40,000 records each            │
+│  User 1 → CF API (fetch 40K records) → Calculate locally    │
+│  User 2 → CF API (fetch 40K records) → Calculate locally    │
+│  User 3 → CF API (fetch 40K records) → Calculate locally    │
+│  ...                                                        │
+│  User 40K → CF API (fetch 40K records) → Calculate locally  │
+│                                                             │
+│  Result: 40,000 API calls × 40,000 records each             │
 └─────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────┐
 │                 CARROT ON CLOUD                             │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │  Backend Server (every 5 min):                              │
-│    └─→ CF API (fetch 40K records ONCE) → Calculate →       │
+│    └─→ CF API (fetch 40K records ONCE) → Calculate →        │
 │         Cache in MySQL                                      │
-│                                                              │
-│  User 1 → Backend API → Cached Data (instant)              │
-│  User 2 → Backend API → Cached Data (instant)              │
-│  User 3 → Backend API → Cached Data (instant)              │
-│  ...                                                         │
-│  User 40K → Backend API → Cached Data (instant)            │
-│                                                              │
-│  Result: 1 API call to CF, 40,000 lightweight responses    │
+│                                                             │
+│  User 1 → Backend API → Cached Data (instant)               │
+│  User 2 → Backend API → Cached Data (instant)               │
+│  User 3 → Backend API → Cached Data (instant)               │
+│  ...                                                        │
+│  User 40K → Backend API → Cached Data (instant)             │
+│                                                             │
+│  Result: 1 API call to CF, 40,000 lightweight responses     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
