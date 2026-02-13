@@ -1,5 +1,7 @@
 import "dotenv/config";
 import {queryContestResults} from "./db/db.js";
+import express from "express";
+
 
 const app = express();
 
