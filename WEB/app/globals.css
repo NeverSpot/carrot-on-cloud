@@ -1,0 +1,328 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+
+  /* ─── Light Mode (default :root) ─── */
+  :root {
+    --background: 220 20% 97%;
+    --foreground: 230 15% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 230 15% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 15% 12%;
+    --primary: 312 80% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 187 70% 42%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 14% 92%;
+    --muted-foreground: 220 8% 46%;
+    --accent: 48 90% 55%;
+    --accent-foreground: 230 15% 12%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 312 80% 50%;
+    --chart-1: 312 80% 50%;
+    --chart-2: 187 70% 42%;
+    --chart-3: 48 90% 55%;
+    --chart-4: 270 60% 50%;
+    --chart-5: 312 60% 40%;
+    --radius: 0.75rem;
+
+    --cf-red: #FF0000;
+    --cf-orange: #FF8C00;
+    --cf-purple: #AA00AA;
+    --cf-blue: #0000FF;
+    --cf-cyan: #03A89E;
+    --cf-green: #008000;
+    --cf-gray: #808080;
+    --dark-bg: #F5F6FA;
+    --dark-surface: #FFFFFF;
+    --dark-elevated: #ECF0F1;
+
+    --glass-bg: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(255, 255, 255, 0.35);
+    --glass-shadow: rgba(0, 0, 0, 0.06);
+    --progress-gradient: linear-gradient(90deg, #D6248F, #0097A7, #D6248F);
+  }
+
+  /* ─── Dark Mode — Codeforces Brand (60-30-10) ─── */
+  .dark {
+    --background: 0 0% 7%;
+    /* #121212 — dark base (60%) */
+    --foreground: 0 0% 90%;
+    /* #E5E5E5 — cf-text-primary */
+    --card: 0 0% 12%;
+    /* #1E1E1E — cf-bg-panel */
+    --card-foreground: 0 0% 90%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 90%;
+    --primary: 212 61% 47%;
+    /* #2F74C0 — CF accent blue (10%) */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 16%;
+    /* #2A2A2A — panels (30%) */
+    --secondary-foreground: 0 0% 90%;
+    --muted: 0 0% 14%;
+    /* #242424 */
+    --muted-foreground: 0 0% 64%;
+    /* #A3A3A3 — cf-text-secondary */
+    --accent: 212 61% 47%;
+    /* #2F74C0 */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    /* #333333 — cf-border */
+    --input: 0 0% 20%;
+    --ring: 212 61% 47%;
+    /* CF blue ring */
+    --chart-1: 212 61% 47%;
+    --chart-2: 212 50% 38%;
+    --chart-3: 212 40% 55%;
+    --chart-4: 220 55% 42%;
+    --chart-5: 205 60% 45%;
+    --radius: 0.75rem;
+
+    --cf-red: #FF0000;
+    --cf-orange: #FF8C00;
+    --cf-purple: #AA00AA;
+    --cf-blue: #2F74C0; /* CF Blue looks better slightly darker */
+    --cf-cyan: #03A89E;
+    --cf-green: #008000;
+    --cf-gray: #808080;
+    --dark-bg: #121212;
+    /* cf-bg-base */
+    --dark-surface: #1E1E1E;
+    /* cf-bg-panel */
+    --dark-elevated: #2A2A2A;
+    /* elevated surface */
+
+    --glass-bg: rgba(18, 18, 18, 0.4);
+    --glass-border: rgba(47, 116, 192, 0.12);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+    --progress-gradient: linear-gradient(90deg, #2F74C0, #154A84, #2F74C0);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-color: var(--dark-bg);
+  }
+}
+
+/* ─── Global Theme Transition ─── */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition:
+    background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    fill 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ─── Theme Transition Overlay ─── */
+.theme-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  animation: theme-wipe-anim 0.7s ease-out forwards;
+}
+
+@keyframes theme-wipe-anim {
+  0% {
+    opacity: 0.45;
+    transform: scale(0);
+    border-radius: 50%;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(3);
+    border-radius: 0;
+  }
+}
+
+/* Scanline overlay effect */
+.scanlines::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px);
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* In light mode, reduce scanline opacity */
+:root .scanlines::after {
+  opacity: 0.3;
+}
+
+.dark .scanlines::after {
+  opacity: 1;
+}
+
+/* Codeforces flat highlighting */
+.glow-cf-blue {
+  box-shadow: 0 4px 14px 0 rgba(47, 116, 192, 0.39);
+}
+
+/* Grain texture overlay */
+.grain::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 49;
+}
+
+:root .grain::before {
+  opacity: 0.15;
+}
+
+.dark .grain::before {
+  opacity: 1;
+}
+
+/* Neon border animation */
+@keyframes neon-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes glow-rotate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Shimmer animation for navbar border */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Glow pulse for cards — CF blue accent */
+@keyframes glow-pulse-border {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(47, 116, 192, 0.15), 0 0 30px rgba(47, 116, 192, 0.08);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(47, 116, 192, 0.3), 0 0 50px rgba(47, 116, 192, 0.15);
+  }
+}
+
+@keyframes glow-pulse-cyan {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(47, 116, 192, 0.15), 0 0 30px rgba(47, 116, 192, 0.08);
+  }
+
+  50% {
+    box-shadow: 0 0 25px rgba(47, 116, 192, 0.3), 0 0 50px rgba(47, 116, 192, 0.15);
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2F74C0;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #154A84;
+}
