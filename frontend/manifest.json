@@ -1,8 +1,14 @@
 {
   "name": "Carrot-On-Cloud",
-  "description": "Carrot with server",
-  "version": "1.0",
+  "description": "Real-time Codeforces rating predictions — compute once, serve instant. Reduces CF API load by 40,000x.",
+  "version": "1.1.0",
   "manifest_version": 3,
+  "permissions": [
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://trexoycbvrfivjkwreea.supabase.co/*"
+  ],
   "action":{
     "default_popup":"./popup/popup.html",
     "default_icon": "icon.png"
